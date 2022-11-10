@@ -1,5 +1,5 @@
 {
-  "name": "frontmatter-markdown-loader",
+  "name": "@yuigoto/frontmatter-markdown-loader",
   "version": "3.6.3",
   "description": "Webpack loader for Front Matter Markdown file to get front matter attributes, compiled markdown and React/Vue component which renders compiled markdown",
   "main": "index.js",
@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/hmsk/frontmatter-markdown-loader#readme",
   "dependencies": {
+    "@swc/core": "^1.2.125",
     "front-matter": "^4.0.0",
     "loader-utils": "^2.0.0",
     "markdown-it": "^11.0.0"
@@ -43,6 +44,7 @@
     "@babel/core": "7.14.6",
     "@babel/preset-env": "7.14.7",
     "@babel/preset-react": "7.14.5",
+    "@swc/jest": "^0.2.15",
     "@vue/babel-preset-app": "4.5.13",
     "@vue/component-compiler-utils": "3.2.2",
     "@vue/test-utils": "1.2.1",
@@ -60,12 +62,10 @@
     "testURL": "http://localhost",
     "moduleFileExtensions": [
       "js",
-      "vue",
       "json"
     ],
     "transform": {
-      "^.+\\.js$": "babel-jest",
-      "^.+\\.vue$": "vue-jest"
+      "^.+\\.js?$": "@swc/jest"
     }
   }
 }

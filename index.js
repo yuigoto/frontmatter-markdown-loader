@@ -137,8 +137,9 @@ module.exports = function (source) {
     const reactRootClass = options.react && options.react.root ? options.react.root : 'frontmatter-markdown';
 
     try {
-      babelCore = require('@babel/core');
-      require('@babel/preset-react');
+      // babelCore = require('@babel/core');
+      // require('@babel/preset-react');
+      babelCore = require('@swc/core');
     } catch (err) {
       throw new Error(
         "Failed to import @babel/core or/and @babel/preset-react: \n" +
@@ -157,15 +158,43 @@ module.exports = function (source) {
       .replace(/<code>(.+?)<\/code>/sg, (match, p1) => `<code dangerouslySetInnerHTML={{ __html: \`${escape(p1)}\`}} />`)
       .replace(/<(code|pre)([^\s>]*)\sclass=([^>]+)>/g, "<$1$2 className=$3>")
 
+    // const compiled = babelCore
+    //   .transformSync(`
+    //     const markdown =
+    //       <div className="${reactRootClass}">
+    //         ${template}
+    //       </div>
+    //     `, {
+    //     presets: ['@babel/preset-react']
+    //   });
+
     const compiled = babelCore
       .transformSync(`
         const markdown =
           <div className="${reactRootClass}">
             ${template}
           </div>
-        `, {
-        presets: ['@babel/preset-react']
-      });
+        `,
+        {
+          "jsc": {
+            "transform": {
+              "react": {
+                "pragma": "React.createElement",
+                "pragmaFrag": "React.Fragment",
+                "throwIfNamespace": true,
+                "development": false,
+                "useBuiltins": false
+              },
+              "optimizer": {
+                "globals": {
+                  "vars": {
+                    "__DEBUG__": "true"
+                  }
+                }
+              }
+            }
+          }
+        });
 
     const reactComponent = `
       function (props) {
